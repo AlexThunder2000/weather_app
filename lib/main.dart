@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart';
 
 void main() {
   runApp(
@@ -26,6 +27,7 @@ class _WeatherAppState extends State<WeatherApp> {
         child: ElevatedButton(
           onPressed: () async {
             position = await _determinePosition();
+            getWeatherData(position: position);
             print(position);
           },
           child: Text('geo'),
@@ -72,4 +74,16 @@ Future<Position> _determinePosition() async {
   return await Geolocator.getCurrentPosition(
     desiredAccuracy: LocationAccuracy.low,
   );
+}
+
+void getWeatherData({required Position position}) async {
+  Response response = await get(
+    Uri.parse(
+        'https://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}7&appid=c8c6ee540eb5d36bd66fcadefea84818&units=metric'),
+  );
+  if (response.statusCode == 200) {
+    print(response.body);
+  } else {
+    print(response.statusCode);
+  }
 }
