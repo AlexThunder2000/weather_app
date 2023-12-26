@@ -1,15 +1,17 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart';
-import 'package:weather_app/model/weather_data_model.dart';
+import 'package:weather_app/bloc/weather_cubit.dart';
+import 'package:weather_app/services/open_weather_api.dart';
 
 void main() {
   runApp(
-    const MaterialApp(
+    MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: WeatherApp(),
+      home: BlocProvider(
+        create: (context) => WeatherCubit()..getWeatherByMyPosition(),
+        child: const WeatherApp(),
+      ),
     ),
   );
 }
@@ -23,74 +25,28 @@ class WeatherApp extends StatefulWidget {
 
 class _WeatherAppState extends State<WeatherApp> {
   late Position position;
+  OpenWeatherAPI openWeatherAPI = OpenWeatherAPI();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () async {
-            position = await _determinePosition();
-            getWeatherData(position: position);
-            print(position);
-          },
-          child: Text('geo'),
-        ),
-      ),
+    return BlocBuilder<WeatherCubit, WeatherState>(
+      builder: (context, state) {
+        return Scaffold(
+          body: SafeArea(
+            child: Center(
+              child: state.apiStatus == ApiStatus.loading
+                  ? const CircularProgressIndicator()
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(state.weatherData.cityName),
+                        Text(state.weatherData.temperature.toString()),
+                      ],
+                    ),
+            ),
+          ),
+        );
+      },
     );
-  }
-}
-
-Future<Position> _determinePosition() async {
-  bool serviceEnabled;
-  LocationPermission permission;
-
-  // Test if location services are enabled.
-  serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    // Location services are not enabled don't continue
-    // accessing the position and request users of the
-    // App to enable the location services.
-    return Future.error('Location services are disabled.');
-  }
-
-  permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) {
-      // Permissions are denied, next time you could try
-      // requesting permissions again (this is also where
-      // Android's shouldShowRequestPermissionRationale
-      // returned true. According to Android guidelines
-      // your App should show an explanatory UI now.
-      return Future.error('Location permissions are denied');
-    }
-  }
-
-  if (permission == LocationPermission.deniedForever) {
-    // Permissions are denied forever, handle appropriately.
-    return Future.error(
-        'Location permissions are permanently denied, we cannot request permissions.');
-  }
-
-  // When we reach here, permissions are granted and we can
-  // continue accessing the position of the device.
-  return await Geolocator.getCurrentPosition(
-    desiredAccuracy: LocationAccuracy.low,
-  );
-}
-
-void getWeatherData({required Position position}) async {
-  Response response = await get(
-    Uri.parse(
-        'https://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}7&appid=c8c6ee540eb5d36bd66fcadefea84818&units=metric'),
-  );
-
-  if (response.statusCode == 200) {
-    Map<String, dynamic> jsonData = jsonDecode(response.body);
-    WeatherData weatherData = WeatherData.fromJson(jsonData);
-
-    print(weatherData.cityName);
-  } else {
-    print(response.statusCode);
   }
 }
