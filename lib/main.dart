@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
+import 'package:weather_app/model/weather_data_model.dart';
 
 void main() {
   runApp(
@@ -81,8 +84,12 @@ void getWeatherData({required Position position}) async {
     Uri.parse(
         'https://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}7&appid=c8c6ee540eb5d36bd66fcadefea84818&units=metric'),
   );
+
   if (response.statusCode == 200) {
-    print(response.body);
+    Map<String, dynamic> jsonData = jsonDecode(response.body);
+    WeatherData weatherData = WeatherData.fromJson(jsonData);
+
+    print(weatherData.cityName);
   } else {
     print(response.statusCode);
   }
