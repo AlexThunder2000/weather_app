@@ -22,6 +22,8 @@ class WeatherState {
           feelsLike: 0,
           humidity: 0,
           windSpeed: 0,
+          temperatureMin: 0,
+          temperatureMax: 0,
           country: '',
           cityName: '',
         );
