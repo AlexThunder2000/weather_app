@@ -1,12 +1,13 @@
 import 'dart:convert';
 
-import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
+import 'package:location/location.dart';
 import 'package:weather_app/model/weather_data_model.dart';
 import 'package:weather_app/utilities/constant.dart';
 
 class OpenWeatherAPI {
-  Future<WeatherData?> getDataByPosition({required Position position}) async {
+  Future<WeatherData?> getDataByPosition(
+      {required LocationData position}) async {
     Response response = await get(
       Uri.parse(
           'https://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}7&appid=${Constant.apiKey}&units=metric'),

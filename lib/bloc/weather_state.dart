@@ -3,17 +3,17 @@ part of 'weather_cubit.dart';
 class WeatherState {
   final String location;
   final WeatherData weatherData;
-  final ApiStatus apiStatus;
+  final PageStatus pageStatus;
 
   const WeatherState({
     required this.weatherData,
     required this.location,
-    required this.apiStatus,
+    required this.pageStatus,
   });
 
   WeatherState.initial()
       : location = '',
-        apiStatus = ApiStatus.loading,
+        pageStatus = PageStatus.loading,
         weatherData = WeatherData(
           main: '',
           description: '',
@@ -28,5 +28,5 @@ class WeatherState {
           cityName: '',
         );
 
-  List<Object> get props => [location, weatherData, apiStatus];
+  List<Object> get props => [location, weatherData, pageStatus];
 }

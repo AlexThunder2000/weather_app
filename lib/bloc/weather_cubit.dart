@@ -1,12 +1,12 @@
 import 'package:bloc/bloc.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart';
 import 'package:weather_app/model/weather_data_model.dart';
 import 'package:weather_app/services/geolocator.dart';
 import 'package:weather_app/services/open_weather_api.dart';
 
 part 'weather_state.dart';
 
-enum ApiStatus { loading, success, error }
+enum PageStatus { loading, success, error }
 
 class WeatherCubit extends Cubit<WeatherState> {
   WeatherCubit() : super(WeatherState.initial());
@@ -15,16 +15,21 @@ class WeatherCubit extends Cubit<WeatherState> {
   OpenWeatherAPI weather = OpenWeatherAPI();
 
   void getWeatherByMyPosition() async {
-    Position position = await location.determinePosition();
+    LocationData? locationData = await location.determinePosition();
+    WeatherData? weatherData;
 
-    WeatherData? weatherData =
-        await weather.getDataByPosition(position: position);
+    if (locationData != null) {
+      weatherData = await weather.getDataByPosition(position: locationData);
+    } else {
+      weatherData = await weather.getDataByLocation(location: 'Kyiv');
+    }
+
     if (weatherData != null) {
       emit(
         WeatherState(
           weatherData: weatherData,
           location: state.location,
-          apiStatus: ApiStatus.success,
+          pageStatus: PageStatus.success,
         ),
       );
     } else {
@@ -32,7 +37,7 @@ class WeatherCubit extends Cubit<WeatherState> {
         WeatherState(
           weatherData: state.weatherData,
           location: state.location,
-          apiStatus: ApiStatus.error,
+          pageStatus: PageStatus.error,
         ),
       );
     }
@@ -43,7 +48,7 @@ class WeatherCubit extends Cubit<WeatherState> {
       WeatherState(
         weatherData: state.weatherData,
         location: location,
-        apiStatus: state.apiStatus,
+        pageStatus: state.pageStatus,
       ),
     );
   }
@@ -56,7 +61,7 @@ class WeatherCubit extends Cubit<WeatherState> {
         WeatherState(
           weatherData: weatherData,
           location: state.location,
-          apiStatus: ApiStatus.success,
+          pageStatus: PageStatus.success,
         ),
       );
     } else {
@@ -64,9 +69,19 @@ class WeatherCubit extends Cubit<WeatherState> {
         WeatherState(
           weatherData: state.weatherData,
           location: state.location,
-          apiStatus: ApiStatus.error,
+          pageStatus: PageStatus.error,
         ),
       );
     }
+  }
+
+  void changePageStatus({required PageStatus pageStatus}) {
+    emit(
+      WeatherState(
+        weatherData: state.weatherData,
+        location: state.location,
+        pageStatus: pageStatus,
+      ),
+    );
   }
 }
