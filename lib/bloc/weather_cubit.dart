@@ -37,4 +37,36 @@ class WeatherCubit extends Cubit<WeatherState> {
       );
     }
   }
+
+  void enterLocation({required String location}) {
+    emit(
+      WeatherState(
+        weatherData: state.weatherData,
+        location: location,
+        apiStatus: state.apiStatus,
+      ),
+    );
+  }
+
+  void getWeatherByLocation() async {
+    WeatherData? weatherData =
+        await weather.getDataByLocation(location: state.location);
+    if (weatherData != null) {
+      emit(
+        WeatherState(
+          weatherData: weatherData,
+          location: state.location,
+          apiStatus: ApiStatus.success,
+        ),
+      );
+    } else {
+      emit(
+        WeatherState(
+          weatherData: state.weatherData,
+          location: state.location,
+          apiStatus: ApiStatus.error,
+        ),
+      );
+    }
+  }
 }

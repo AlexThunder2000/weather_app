@@ -24,7 +24,7 @@ class OpenWeatherAPI {
   Future<WeatherData?> getDataByLocation({required String location}) async {
     Response response = await get(
       Uri.parse(
-          'https://api.openweathermap.org/data/2.5/weather?q=$location&appid=c8c6ee540eb5d36bd66fcadefea84818&units=metric'),
+          'https://api.openweathermap.org/data/2.5/weather?q=$location&appid=${Constant.apiKey}&units=metric'),
     );
 
     if (response.statusCode == 200) {
