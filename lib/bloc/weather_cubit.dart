@@ -1,12 +1,12 @@
 import 'package:bloc/bloc.dart';
-import 'package:location/location.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/model/weather_data_model.dart';
-import 'package:weather_app/services/geolocator.dart';
+import 'package:weather_app/services/location_service.dart';
 import 'package:weather_app/services/open_weather_api.dart';
 
 part 'weather_state.dart';
 
-enum PageStatus { loading, success, error }
+enum PageStatus { loading, success, error, serviceError }
 
 class WeatherCubit extends Cubit<WeatherState> {
   WeatherCubit() : super(WeatherState.initial());
@@ -15,13 +15,11 @@ class WeatherCubit extends Cubit<WeatherState> {
   OpenWeatherAPI weather = OpenWeatherAPI();
 
   void getWeatherByMyPosition() async {
-    LocationData? locationData = await location.determinePosition();
+    Position? position = await location.determinePosition();
     WeatherData? weatherData;
 
-    if (locationData != null) {
-      weatherData = await weather.getDataByPosition(position: locationData);
-    } else {
-      weatherData = await weather.getDataByLocation(location: 'Kyiv');
+    if (position != null) {
+      weatherData = await weather.getDataByPosition(position: position);
     }
 
     if (weatherData != null) {
@@ -37,7 +35,7 @@ class WeatherCubit extends Cubit<WeatherState> {
         WeatherState(
           weatherData: state.weatherData,
           location: state.location,
-          pageStatus: PageStatus.error,
+          pageStatus: PageStatus.serviceError,
         ),
       );
     }

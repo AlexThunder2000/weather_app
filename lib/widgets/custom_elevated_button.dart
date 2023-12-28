@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/utilities/text_style_source.dart';
 
 class CustomElevatedButton extends StatelessWidget {
   final String title;
@@ -19,7 +20,10 @@ class CustomElevatedButton extends StatelessWidget {
       onPressed: () {
         callback();
       },
-      child: Text(title),
+      child: Text(
+        title,
+        style: TextStyleSource.inter14,
+      ),
     );
   }
 }

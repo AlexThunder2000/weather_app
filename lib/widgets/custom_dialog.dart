@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:weather_app/utilities/animation_source.dart';
+import 'package:weather_app/utilities/text_style_source.dart';
 import 'package:weather_app/widgets/custom_elevated_button.dart';
 
 class CustomDialog extends StatelessWidget {
+  final String title;
   const CustomDialog({
     super.key,
+    required this.title,
   });
 
   @override
@@ -29,8 +32,9 @@ class CustomDialog extends StatelessWidget {
               height: 100,
               child: Lottie.asset(AnimationSource.error),
             ),
-            const Text(
-              'You entered a non-existent location or something went wrong. Please try again',
+            Text(
+              title,
+              style: TextStyleSource.inter16,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),

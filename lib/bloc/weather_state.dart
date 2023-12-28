@@ -12,7 +12,7 @@ class WeatherState {
   });
 
   WeatherState.initial()
-      : location = '',
+      : location = 'Kyiv',
         pageStatus = PageStatus.loading,
         weatherData = WeatherData(
           main: '',

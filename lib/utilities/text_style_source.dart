@@ -12,6 +12,11 @@ class TextStyleSource {
     fontWeight: FontWeight.w400,
     height: 1.1,
   );
+  static final inter24 = GoogleFonts.inter(
+    fontSize: 24,
+    fontWeight: FontWeight.w400,
+    height: 1.1,
+  );
   static final inter14 = GoogleFonts.inter(
     fontSize: 14,
     fontWeight: FontWeight.w400,

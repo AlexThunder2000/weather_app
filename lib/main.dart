@@ -16,7 +16,7 @@ class WeatherApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => WeatherCubit()..getWeatherByMyPosition(),
+      create: (context) => WeatherCubit()..getWeatherByLocation(),
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         routerConfig: router,

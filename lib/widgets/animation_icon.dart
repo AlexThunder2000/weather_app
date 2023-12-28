@@ -12,8 +12,8 @@ class AnimationIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 100,
-      width: 100,
+      height: 150,
+      width: 150,
       child: Lottie.asset(
         getWeatherAnimation(
           mainCondition: mainCondition,
@@ -41,6 +41,8 @@ String getWeatherAnimation({required String? mainCondition}) {
       return AnimationSource.rain;
     case 'thunderstorm':
       return AnimationSource.thunder;
+    case 'snow':
+      return AnimationSource.snow;
     case 'clear':
       return AnimationSource.sun;
     default:
