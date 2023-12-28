@@ -16,16 +16,16 @@ List down the software and tools required to run your app, for example:
 
 ### Clone the repository to your local machine:
 
-git clone https://github.com/AlexThunder2000/weather_app
+`git clone https://github.com/AlexThunder2000/weather_app`
 
 ### Navigate to the project directory:
 
-cd your-project
+`cd your-project`
 
 ### Install dependencies:
 
-flutter pub get
+`flutter pub get`
 
 ### Run the app using Flutter:
 
-flutter run
+`flutter run`
